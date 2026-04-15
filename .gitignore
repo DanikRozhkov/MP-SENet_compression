@@ -1,0 +1,9 @@
+VoiceBank+DEMAND/
+experiments/logs/
+generated_files/
+
+.vscode/
+.DS_Store
+
+__pycache__/
+models/__pycache__/
