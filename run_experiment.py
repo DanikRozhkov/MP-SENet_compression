@@ -6,33 +6,11 @@ import torch
 import soundfile as sf
 import numpy as np
 import inference
-from cal_metrics.compute_metrics import compute_metrics
+from compression.utils import compute_all_metrics, log_results
+
 
 h = None
 device = None
-
-def compute_all_metrics(clean_dir, enhanced_dir, sr=16000):
-    print("Start computing metrics")
-
-    metrics_list = []
-    print(clean_dir, enhanced_dir)
-    for filename in os.listdir(enhanced_dir):
-        if not filename.endswith('.wav'):
-            continue
-        enhanced_path = os.path.join(enhanced_dir, filename)
-        clean_path = os.path.join(clean_dir, filename)
-        if not os.path.exists(clean_path):
-            print(f"Warning: clean file not found for {filename}")
-            continue
-        clean, sr_clean = sf.read(clean_path)
-        enhanced, sr_enh = sf.read(enhanced_path)
-        assert sr_clean == sr_enh, "Sampling rates differ"
-        clean = clean[:len(clean)]
-        enhanced = enhanced[:len(clean)]
-        metrics = compute_metrics(clean, enhanced, sr_clean, 0)
-        metrics_list.append(metrics)
-    metrics_avg = np.mean(metrics_list, axis=0)
-    return metrics_avg
 
 def main():
     print("Initializing experiment process")
@@ -68,8 +46,18 @@ def main():
     enhanced_dir = "VoiceBank+DEMAND/generated_files"   # та же папка, куда сохранил inference
     sr = h.sampling_rate   # из конфига
 
-    metrics_avg = compute_all_metrics(clean_dir, enhanced_dir, sr)
+    metrics_avg = compute_all_metrics(clean_dir, enhanced_dir)
     print(f"WB-PESQ: {metrics_avg[0]:.3f}, CSIG: {metrics_avg[1]:.3f}, CBAK: {metrics_avg[2]:.3f}, COVL: {metrics_avg[3]:.3f}, SSNR: {metrics_avg[4]:.3f}, STOI: {metrics_avg[5]:.3f}")
+
+    log_results(
+        metrics_avg=metrics_avg,
+        checkpoint_file=a.checkpoint_file,
+        config_dict=json_config,
+        device=device,
+        experiment_id='baseline',
+        method='none',
+        compression_params=''
+    )
 
 
 if __name__ == '__main__':
