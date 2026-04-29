@@ -98,7 +98,7 @@ def count_params_flops_macs(model, input_shape_amp, input_shape_pha, device='cpu
     return params, flops, macs
 
 def log_results(metrics_avg, checkpoint_file, config_dict, device='cpu', 
-                experiment_id='baseline', method='none', compression_params=''):
+                experiment_id='baseline', method='none'):
     """
     Записывает результаты эксперимента в файл experiments/results.csv
     """
@@ -113,7 +113,6 @@ def log_results(metrics_avg, checkpoint_file, config_dict, device='cpu',
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         'experiment_id': experiment_id,
         'method': method,
-        'compression_params': compression_params,
         'checkpoint': checkpoint_file,
         'params': params,
         'flops': flops,
