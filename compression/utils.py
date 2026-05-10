@@ -15,8 +15,8 @@ def generate_test_dataset(noisy_dir="VoiceBank+DEMAND/wav_noisy",
                           list_file="VoiceBank+DEMAND/test.txt",
                           target_dir="VoiceBank+DEMAND/testset_noisy"):
     """
-    Копирует шумные .wav файлы из source_noisy_dir в target_noisy_dir.
-    Имена файлов берутся из list_file (первое поле до '|', добавляется .wav).
+    Копирует шумные .wav файлы из source_noisy_dir в target_noisy_dir
+    Имена файлов берутся из list_file (первое поле до '|', добавляется .wav)
     """
     os.makedirs(target_dir, exist_ok=True)
     
@@ -73,7 +73,7 @@ def compute_all_metrics(clean_dir, enhanced_dir):
 
 def count_params_flops_macs(model, input_shape_amp, input_shape_pha, device='cpu'):
     """
-    Подсчитывает метрики Params, FLOPs и MACs.
+    Подсчитывает метрики Params, FLOPs и MACs
     """
     model.eval()
     amp = torch.randn(input_shape_amp).to(device)
