@@ -4,25 +4,36 @@ import yaml
 import argparse
 from env import AttrDict
 import torch
-import soundfile as sf
-import numpy as np
 import inference
+from models.model import MPNet
 from compression.utils import compute_all_metrics, log_results
+from compression.prune import unstructured_pruning
+from compression.finetune import fine_tune_model
 
 
 h = None
 device = None
 
-def apply_compression(config):
-    print(f"Applying {config['experiment']['method']} method")
-    if config['experiment']['method'] == 'pruning':
-        print(config['compression']['some_parameter'])
-    elif config['experiment']['method'] == 'quantization':
-        pass
-    elif config['experiment']['method'] == 'baseline':
-        pass
+def apply_compression(config, model):
+    method = config['experiment']['method']
+
+    if method == 'pruning':
+        compression_parameters = config.get('compression', {})
+        print(f"Applying {method} method with parameters: {compression_parameters}")
+        # TODO: переделать чтобы считывал тип прунинга и применял нужный
+        model = unstructured_pruning(model, compression_parameters)
+        return model
+    
+    elif method == 'quantization':
+        return model
+    
+    elif method == 'baseline':
+        return model
+    
     else:
         print(f"Warning: no such compression method")
+        return model
+        
 
 def main():
     print("Initializing experiment process")
@@ -52,18 +63,37 @@ def main():
     else:
         device = torch.device('cpu')
 
+    # Загружаю модель
+    model = MPNet(h).to(device)
+    checkpoint = torch.load(experiment_config['data']['checkpoint_file'], map_location='cpu')
+    model.load_state_dict(checkpoint['generator'])
+
     # Применяю сжатие
-    apply_compression(config=experiment_config)
+    model = apply_compression(config=experiment_config, model=model)
+
+    if experiment_config['compression']['finetune']:
+        model = fine_tune_model(
+            model=model,
+            device=device,
+            checkpoint_path=None,
+            h=h,
+            num_files=experiment_config['compression']['num_files'],
+            batch_size=experiment_config['compression']['batch_size'],
+            epochs=experiment_config['compression']['epochs'],
+            lr=experiment_config['compression']['lr'],
+            seed=h.seed
+        )
 
     # Запускаю инференс
     inference.h = h
     inference.device = device
     inference.inference(experiment_config['data']['input_noisy_wavs_dir'],
                         experiment_config['data']['output_dir'],
-                        experiment_config['data']['checkpoint_file'])
+                        experiment_config['data']['checkpoint_file'], # TODO: как будто этот параметр можно просто убрать, перепроверить
+                        model=model)
 
     clean_dir = "VoiceBank+DEMAND/wav_clean"   # путь к чистым файлам
-    enhanced_dir = "VoiceBank+DEMAND/generated_files"   # та же папка, куда сохранил inference
+    enhanced_dir = experiment_config['data']['output_dir']   # та же папка, куда сохранил inference
 
     # Считаю метрики
     metrics_avg = compute_all_metrics(clean_dir, enhanced_dir)
@@ -71,12 +101,13 @@ def main():
 
     # Логирую результат
     log_results(
+        model=model,
         metrics_avg=metrics_avg,
         checkpoint_file=experiment_config['data']['checkpoint_file'],
-        config_dict=json_config,
         device=device,
         experiment_id=experiment_config['experiment']['id'],
-        method=experiment_config['experiment']['method']
+        method=experiment_config['experiment']['method'],
+        file_path=experiment_config['data']['results_file']
     )
 
 

@@ -1,6 +1,7 @@
 VoiceBank+DEMAND/
 experiments/logs/
 configs/
+experiments/*.png
 
 .vscode/
 .DS_Store

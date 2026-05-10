@@ -1,2 +1,16 @@
 2026-04-27 22:14:07,baseline,none,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44118,4.699620,3.89362,4.16901,10.17739,0.95407
-2026-04-29 23:16:34,test_pruning,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44118,4.699620,3.89362,4.16901,10.17739,0.95407
+2026-05-01 02:01:21,pruning_unstr_l1_0.2_con2d,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.39557,4.693355,3.72765,4.14075,7.88964,0.95405
+2026-05-01 09:06:35,pruning_unstr_l1_0.3_con2d,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36026,4.677207,3.63980,4.11373,6.76938,0.95438
+2026-05-01 09:37:17,pruning_unstr_l1_0.4_con2d,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.27800,4.612876,3.55282,4.02780,6.02865,0.95386
+2026-05-01 10:03:16,pruning_unstr_l1_0.5_con2d,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.21989,4.595575,3.50243,3.98738,5.66491,0.95319
+2026-05-01 10:29:07,pruning_unstr_l1_0.1_con2d,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44029,4.699083,3.88314,4.16818,10.01824,0.95403
+2026-05-01 14:00:40,pruning_unstr_l1_0.1_con2d_nophase,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44005,4.699020,3.87989,4.16799,9.96848,0.95403
+2026-05-01 17:53:48,pruning_unstr_l1_0.2_con2d_nophase,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.39619,4.693690,3.72790,4.14127,7.88905,0.95407
+2026-05-01 18:31:03,pruning_unstr_l1_0.3_con2d_nophase,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36033,4.677528,3.64042,4.11387,6.77852,0.95442
+2026-05-02 11:42:51,pruning_unstr_l1_0.4_con2d_nophase,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.27930,4.613408,3.55481,4.02910,6.04872,0.95396
+2026-05-02 12:08:01,pruning_unstr_l1_0.5_con2d_nophase,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.21948,4.595739,3.50585,3.98742,5.72138,0.95333
+2026-05-05 08:59:19,pruning_unstr_l1_0.1_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.38057,4.720897,3.91512,4.15453,10.93146,0.96127
+2026-05-05 09:44:45,pruning_unstr_l1_0.2_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.38740,4.721439,3.91674,4.15947,10.90477,0.96123
+2026-05-05 10:30:07,pruning_unstr_l1_0.3_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.38704,4.722315,3.91652,4.15925,10.90399,0.96125
+2026-05-05 11:15:31,pruning_unstr_l1_0.4_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36859,4.716285,3.90264,4.14376,10.82934,0.96100
+2026-05-05 12:01:12,pruning_unstr_l1_0.5_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36289,4.712448,3.89058,4.13792,10.68167,0.96091

@@ -97,15 +97,11 @@ def count_params_flops_macs(model, input_shape_amp, input_shape_pha, device='cpu
     )
     return params, flops, macs
 
-def log_results(metrics_avg, checkpoint_file, config_dict, device='cpu', 
-                experiment_id='baseline', method='none'):
+def log_results(model, metrics_avg, checkpoint_file, device='cpu', 
+                experiment_id='baseline', method='none', file_path="experiments/results.csv"):
     """
     Записывает результаты эксперимента в файл experiments/results.csv
     """
-    h = AttrDict(config_dict)
-    model = MPNet(h).to(device)
-    checkpoint = torch.load(checkpoint_file, map_location='cpu', weights_only=False)
-    model.load_state_dict(checkpoint['generator'])
     input_shape_amp = (1, 201, 160) # TODO: не хардкодить это
     input_shape_pha = (1, 201, 160) # TODO: не хардкодить это
     params, flops, macs = count_params_flops_macs(model, input_shape_amp, input_shape_pha, device)
@@ -125,7 +121,7 @@ def log_results(metrics_avg, checkpoint_file, config_dict, device='cpu',
         'STOI': f"{metrics_avg[5]:.5f}",
     }
 
-    csv_path = 'experiments/results.csv'
+    csv_path = file_path
     os.makedirs(os.path.dirname(csv_path), exist_ok=True)
     file_exists = os.path.isfile(csv_path)
     with open(csv_path, 'a', newline='') as f:

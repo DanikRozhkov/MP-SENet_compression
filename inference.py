@@ -32,11 +32,14 @@ def scan_checkpoint(cp_dir, prefix):
         return ''
     return sorted(cp_list)[-1]
 
-def inference(input_noisy_wavs_dir, output_dir, checkpoint_file):
-    model = MPNet(h).to(device)
-
-    state_dict = load_checkpoint(checkpoint_file, device)
-    model.load_state_dict(state_dict['generator'])
+def inference(input_noisy_wavs_dir, output_dir, checkpoint_file, model=None):
+    # Если передана модель то параметр checkpoint_file не используется
+    if model is None:
+        model = MPNet(h).to(device)
+        state_dict = load_checkpoint(checkpoint_file, device)
+        model.load_state_dict(state_dict['generator'])
+    else:
+        model = model.to(device)
 
     test_indexes = os.listdir(input_noisy_wavs_dir)
 
