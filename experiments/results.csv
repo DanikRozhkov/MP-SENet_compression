@@ -14,3 +14,13 @@
 2026-05-05 10:30:07,pruning_unstr_l1_0.3_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.38704,4.722315,3.91652,4.15925,10.90399,0.96125
 2026-05-05 11:15:31,pruning_unstr_l1_0.4_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36859,4.716285,3.90264,4.14376,10.82934,0.96100
 2026-05-05 12:01:12,pruning_unstr_l1_0.5_con2d_finetune,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.36289,4.712448,3.89058,4.13792,10.68167,0.96091
+2026-05-10 23:55:55,pruning_unstr_l1_0.1_con2d+linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44169,4.701265,3.88324,4.17042,10.01020,0.95407
+2026-05-11 00:23:51,pruning_unstr_l1_0.2_con2d+linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.40431,4.698878,3.73306,4.14689,7.91088,0.95477
+2026-05-11 00:51:30,pruning_unstr_l1_0.3_con2d+linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.39364,4.705715,3.66147,4.14739,6.86432,0.95648
+2026-05-11 01:20:32,pruning_unstr_l1_0.4_con2d+linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.31490,4.655937,3.57221,4.07059,6.06701,0.95598
+2026-05-11 01:50:09,pruning_unstr_l1_0.5_con2d+linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.26643,4.648200,3.52508,4.03968,5.68354,0.95602
+2026-05-17 01:39:34,pruning_unstr_l1_0.1_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44298,4.701812,3.89394,4.17158,10.16980,0.95409
+2026-05-17 03:41:05,pruning_unstr_l1_0.2_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44918,4.704355,3.89787,4.17438,10.18627,0.95474
+2026-05-17 04:10:14,pruning_unstr_l1_0.3_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.46070,4.721577,3.90202,4.19057,10.16669,0.95613
+2026-05-17 04:38:50,pruning_unstr_l1_0.4_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.45524,4.722662,3.89807,4.18782,10.15483,0.95617
+2026-05-17 05:08:20,pruning_unstr_l1_0.5_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44460,4.730202,3.88235,4.18299,9.97959,0.95633

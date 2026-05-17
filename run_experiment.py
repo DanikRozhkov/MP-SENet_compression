@@ -7,7 +7,7 @@ import torch
 import inference
 from models.model import MPNet
 from compression.utils import compute_all_metrics, log_results
-from compression.prune import unstructured_pruning
+from compression.prune import unstructured_pruning, structured_pruning
 from compression.finetune import fine_tune_model
 
 
@@ -19,9 +19,14 @@ def apply_compression(config, model):
 
     if method == 'pruning':
         compression_parameters = config.get('compression', {})
-        print(f"Applying {method} method with parameters: {compression_parameters}")
-        # TODO: переделать чтобы считывал тип прунинга и применял нужный
-        model = unstructured_pruning(model, compression_parameters)
+        pruning_type = config['compression'].get('type', 'unstructured')
+
+        if pruning_type == 'unstructured':
+            model = unstructured_pruning(model, compression_parameters)
+        else:
+            model = structured_pruning(model, compression_parameters)
+            
+        print(f"Applying {pruning_type} {method} method with parameters: {compression_parameters}")
         return model
     
     elif method == 'quantization':
