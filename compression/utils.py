@@ -153,3 +153,12 @@ if __name__ == '__main__':
         )
     else:
         parser.print_help()
+
+
+def get_model_size_mb(model):
+    total_bytes = 0
+    for param in model.parameters():
+        total_bytes += param.numel() * param.element_size()
+    for buffer in model.buffers():
+        total_bytes += buffer.numel() * buffer.element_size()
+    return total_bytes / (1024 ** 2)

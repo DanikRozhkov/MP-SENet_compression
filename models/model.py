@@ -5,6 +5,7 @@ from models.transformer import TransformerBlock
 from utils import LearnableSigmoid2d
 from pesq import pesq
 from joblib import Parallel, delayed
+# from torch.ao.quantization import QuantStub, DeQuantStub
 
 class SPConvTranspose2d(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, r=1):
@@ -144,8 +145,13 @@ class MPNet(nn.Module):
         
         self.mask_decoder = MaskDecoder(h, out_channel=1)
         self.phase_decoder = PhaseDecoder(h, out_channel=1)
+        # self.quant = QuantStub()
+        # self.dequant = DeQuantStub()
 
     def forward(self, noisy_amp, noisy_pha): # [B, F, T]
+        # Для статического квантования
+        # noisy_amp = self.quant(noisy_amp)
+        # noisy_pha = self.quant(noisy_pha)
 
         x = torch.stack((noisy_amp, noisy_pha), dim=-1).permute(0, 3, 2, 1) # [B, 2, T, F]
         x = self.dense_encoder(x)
@@ -157,7 +163,11 @@ class MPNet(nn.Module):
         denoised_pha = self.phase_decoder(x)
         denoised_com = torch.stack((denoised_amp*torch.cos(denoised_pha),
                                     denoised_amp*torch.sin(denoised_pha)), dim=-1)
-
+        
+        # Для статического квантования
+        # denoised_amp = self.dequant(denoised_amp)
+        # denoised_pha = self.dequant(denoised_pha)
+        # denoised_com = self.dequant(denoised_com)
         return denoised_amp, denoised_pha, denoised_com
 
 

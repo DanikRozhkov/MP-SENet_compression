@@ -38,16 +38,23 @@ class TransformerBlock(nn.Module):
 
         self.norm3 = LayerNorm(d_model)
 
+        # пытаемся фиксить квантование
+        # import torch.nn.quantized as nnq
+        # self.add1 = nnq.FloatFunctional()
+        # self.add2 = nnq.FloatFunctional()
+
     def forward(self, x, attn_mask=None, key_padding_mask=None):
         xt = self.norm1(x)
         xt, _ = self.attention(xt, xt, xt,
                                attn_mask=attn_mask,
                                key_padding_mask=key_padding_mask)
         x = x + self.dropout1(xt)
+        # x = self.add1.add(x, self.dropout1(xt)) - для квантизации
 
         xt = self.norm2(x)
         xt = self.ffn(xt)
         x = x + self.dropout2(xt)
+        # x = self.add2.add(x, self.dropout2(xt)) - для  квантизации
 
         x = self.norm3(x)
 

@@ -6,30 +6,32 @@ from env import AttrDict
 import torch
 import inference
 from models.model import MPNet
-from compression.utils import compute_all_metrics, log_results
-from compression.prune import unstructured_pruning, structured_pruning
+from compression.utils import compute_all_metrics, log_results, get_model_size_mb
+from compression.prune import unstructured_pruning
+from compression.quantize import quantization
 from compression.finetune import fine_tune_model
 
 
 h = None
 device = None
 
-def apply_compression(config, model):
+def apply_compression(config, model, device='cpu'):
     method = config['experiment']['method']
-
+    compression_parameters = config.get('compression', {})
     if method == 'pruning':
-        compression_parameters = config.get('compression', {})
         pruning_type = config['compression'].get('type', 'unstructured')
 
         if pruning_type == 'unstructured':
             model = unstructured_pruning(model, compression_parameters)
         else:
-            model = structured_pruning(model, compression_parameters)
+            # model = structured_pruning(model, compression_parameters)
+            pass
             
         print(f"Applying {pruning_type} {method} method with parameters: {compression_parameters}")
         return model
     
     elif method == 'quantization':
+        model = quantization(model, compression_parameters, device=device)
         return model
     
     elif method == 'baseline':
@@ -74,7 +76,7 @@ def main():
     model.load_state_dict(checkpoint['generator'])
 
     # Применяю сжатие
-    model = apply_compression(config=experiment_config, model=model)
+    model = apply_compression(config=experiment_config, model=model, device=device)
 
     if experiment_config['compression']['finetune']:
         model = fine_tune_model(
@@ -86,7 +88,8 @@ def main():
             batch_size=experiment_config['compression']['batch_size'],
             epochs=experiment_config['compression']['epochs'],
             lr=experiment_config['compression']['lr'],
-            seed=h.seed
+            seed=h.seed,
+            qat=True # TODO: Потом поменять
         )
 
     # Запускаю инференс
