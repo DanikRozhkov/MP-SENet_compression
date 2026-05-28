@@ -26,3 +26,4 @@
 2026-05-17 05:08:20,pruning_unstr_l1_0.5_linear,pruning,best_ckpt/g_best_vb,2.26 M,80.93 GFLOPS,21.09 GMACs,3.44460,4.730202,3.88235,4.18299,9.97959,0.95633
 2026-05-17 18:32:56,quant_dynamic_int8,quantization,best_ckpt/g_best_vb,2.13 M,76.7 GFLOPS,18.97 GMACs,3.43871,4.698770,3.89271,4.16721,10.18162,0.95404
 2026-05-17 22:31:18,quant_static_int8,quantization,best_ckpt/g_best_vb,1.33 M,42.66 GFLOPS,2.12 GMACs,2.53156,4.115414,3.11765,3.37638,5.01472,0.94431
+2026-05-21 18:00:17,basic_kd,distillation,best_ckpt/g_best_vb,571.66 K,20.43 GFLOPS,5.28 GMACs,2.61339,4.073756,3.32233,3.39486,7.61472,0.92684

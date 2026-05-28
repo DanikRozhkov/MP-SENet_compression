@@ -10,6 +10,7 @@ from compression.utils import compute_all_metrics, log_results, get_model_size_m
 from compression.prune import unstructured_pruning
 from compression.quantize import quantization
 from compression.finetune import fine_tune_model
+from compression.destilation import distill_model
 
 
 h = None
@@ -33,6 +34,10 @@ def apply_compression(config, model, device='cpu'):
     elif method == 'quantization':
         model = quantization(model, compression_parameters, device=device)
         return model
+    
+    elif method == 'distillation':
+        student_model = distill_model(None, config, device)
+        return student_model
     
     elif method == 'baseline':
         return model
