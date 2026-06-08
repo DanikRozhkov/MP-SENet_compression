@@ -16,6 +16,7 @@ from rich.progress import track
 
 h = None
 device = None
+use_amp = False
 
 def load_checkpoint(filepath, device):
     assert os.path.isfile(filepath)
@@ -47,6 +48,12 @@ def inference(input_noisy_wavs_dir, output_dir, checkpoint_file, model=None):
 
     model.eval()
 
+    device_type = 'cuda' if 'cuda' in str(device) else 'cpu'
+    amp_dtype = torch.float16 if device_type == 'cuda' else torch.bfloat16
+    is_amp_enabled = getattr(model, 'use_amp', False)
+    if is_amp_enabled:
+        print(f"Running inference with AMP enabled ({amp_dtype}).")
+
     with torch.no_grad():
         for index in track(test_indexes):
             noisy_wav, _ = librosa.load(os.path.join(input_noisy_wavs_dir, index), sr=h.sampling_rate)
@@ -54,7 +61,12 @@ def inference(input_noisy_wavs_dir, output_dir, checkpoint_file, model=None):
             norm_factor = torch.sqrt(len(noisy_wav) / torch.sum(noisy_wav ** 2.0)).to(device)
             noisy_wav = (noisy_wav * norm_factor).unsqueeze(0)
             noisy_amp, noisy_pha, noisy_com = mag_pha_stft(noisy_wav, h.n_fft, h.hop_size, h.win_size, h.compress_factor)
-            amp_g, pha_g, com_g = model(noisy_amp, noisy_pha)
+            
+            with torch.autocast(device_type=device_type, dtype=amp_dtype, enabled=is_amp_enabled):
+                amp_g, pha_g, com_g = model(noisy_amp, noisy_pha)
+            amp_g = amp_g.float()
+            pha_g = pha_g.float()
+            
             audio_g = mag_pha_istft(amp_g, pha_g, h.n_fft, h.hop_size, h.win_size, h.compress_factor)
             audio_g = audio_g / norm_factor
 

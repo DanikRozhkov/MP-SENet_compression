@@ -11,6 +11,7 @@ from compression.prune import unstructured_pruning
 from compression.quantize import quantization
 from compression.finetune import fine_tune_model
 from compression.destilation import distill_model
+from compression.compress_with_nncf import fine_tune_with_nncf_pruning
 
 
 h = None
@@ -25,8 +26,17 @@ def apply_compression(config, model, device='cpu'):
         if pruning_type == 'unstructured':
             model = unstructured_pruning(model, compression_parameters)
         else:
-            # model = structured_pruning(model, compression_parameters)
-            pass
+            model = fine_tune_with_nncf_pruning(
+                model=model,
+                device=device,
+                h=h,
+                num_files=10,
+                batch_size=2,
+                epochs=50,
+                lr=1e-5,
+                pruning_target=0.9
+            )
+            
             
         print(f"Applying {pruning_type} {method} method with parameters: {compression_parameters}")
         return model
@@ -38,6 +48,11 @@ def apply_compression(config, model, device='cpu'):
     elif method == 'distillation':
         student_model = distill_model(None, config, device)
         return student_model
+    
+    elif method == 'amp':
+        print("Включен режим AMP (Mixed Precision)")
+        model.use_amp = True 
+        return model
     
     elif method == 'baseline':
         return model
@@ -76,14 +91,25 @@ def main():
         device = torch.device('cpu')
 
     # Загружаю модель
+    h.dense_channel = 32
+    h.num_tsconformers = 2
     model = MPNet(h).to(device)
-    checkpoint = torch.load(experiment_config['data']['checkpoint_file'], map_location='cpu')
-    model.load_state_dict(checkpoint['generator'])
+    if experiment_config['experiment'].get('use_student', False):
+        print("Загрузка дистиллированной модели (student_model.pth)...")
+        h.dense_channel = 32
+        h.num_tsconformers = 2
+        checkpoint = torch.load('student_model.pth', map_location='cpu')
+        model.load_state_dict(checkpoint['generator'] if 'generator' in checkpoint else checkpoint)
+    else:
+        print("Загрузка базовой модели...")
+        checkpoint = torch.load(experiment_config['data']['checkpoint_file'], map_location='cpu')
+        model.load_state_dict(checkpoint['generator'])
 
     # Применяю сжатие
     model = apply_compression(config=experiment_config, model=model, device=device)
-
+    print(experiment_config['compression']['finetune'])
     if experiment_config['compression']['finetune']:
+        print(experiment_config['compression']['finetune'])
         model = fine_tune_model(
             model=model,
             device=device,
@@ -94,15 +120,16 @@ def main():
             epochs=experiment_config['compression']['epochs'],
             lr=experiment_config['compression']['lr'],
             seed=h.seed,
-            qat=True # TODO: Потом поменять
+            qat=False
         )
 
     # Запускаю инференс
     inference.h = h
     inference.device = device
+    inference.use_amp = getattr(model, 'use_amp', False)
     inference.inference(experiment_config['data']['input_noisy_wavs_dir'],
                         experiment_config['data']['output_dir'],
-                        experiment_config['data']['checkpoint_file'], # TODO: как будто этот параметр можно просто убрать, перепроверить
+                        experiment_config['data']['checkpoint_file'],
                         model=model)
 
     clean_dir = "VoiceBank+DEMAND/wav_clean"   # путь к чистым файлам
